@@ -114,6 +114,7 @@ Formulas.
 \cr\cr
 
 \bold{3.3. Pseudot2 index. Duda and Hart (1973)\cr}
+This index can only be applied to hierarchical methods.
 \deqn{pseudot2=\frac{B_{kl}}{\frac{W_{k}+W_{l}}{n_{k}+n_{l}-2}}}{pseudot2 = B_kl /  [(W_k + W_l)/(n_k+n_l - 2)]}  
 \eqn{B_{kl}, W_{k}, W_{l}}{B_kl, W_k, W_l} are defined in Duda index.\cr
      \eqn{n_{k}}{n_k} and \eqn{n_{l}}{n_l} are the number of objects in respectively \eqn{C_{k}}{C_k} and \eqn{C_{l}}{C_l} clusters. \cr
@@ -139,6 +140,7 @@ ClusterSim package.\cr
 \cr\cr
 
 \bold{3.5. Gamma index. Baker and Hubert (1975)\cr}
+This index can only be applied to hierarchical methods.
 \deqn{gamma=\frac{s(+)-s(-)}{s(+)+s(-)}}{gamma=[s(+)-s(-)]/[s(+)+s(-)]}
 
 where:\cr    
@@ -237,7 +239,8 @@ ClusterSim package. \cr
 \bold{References : } Milligan and Cooper (1985), Davies and Bouldin (1979 and Walesiak and Dudek (2011). \cr\cr
 
 \bold{3.11. Frey index. Frey and Van Groenewoud (1972) \cr}
-Frey index is the ratio of difference scores from two successive levels in the hierarchy. The numerator is the difference between the mean outside-cluster distances, \eqn{\bar{d}_{v}}{\bar(d_v)}, from each of the two hierarchy levels (level j and level j+1). The denominator is the difference between the mean within cluster distances from the two levels (level j and level j+1). The authors proposed using a ratio score of 1.00 to identify the correct cluster level. The ratios often varied above and below 1.00. The best results occurred when clustering was continued until the ratio fell below 1.00 for the last series of times. At this point, the cluster level before this series was taken as the optimal partition. If the ratio never fell below 1.00, a one cluster solution was assumed.   
+Frey index can only be applied to hierarchical methods.
+This index is the ratio of difference scores from two successive levels in the hierarchy. The numerator is the difference between the mean outside-cluster distances, \eqn{\bar{d}_{v}}{\bar(d_v)}, from each of the two hierarchy levels (level j and level j+1). The denominator is the difference between the mean within cluster distances from the two levels (level j and level j+1). The authors proposed using a ratio score of 1.00 to identify the correct cluster level. The ratios often varied above and below 1.00. The best results occurred when clustering was continued until the ratio fell below 1.00 for the last series of times. At this point, the cluster level before this series was taken as the optimal partition. If the ratio never fell below 1.00, a one cluster solution was assumed.   
 
 \deqn{K=\frac{\bar{d}_{v_{j+1}}-\bar{d}_{v_{j}}}{\bar{d}_{s_{j+1}}-\bar{d}_{s_{j}}}}{K=[\bar(d_vj+1) - \bar(d_vj)] / [\bar(d_sj+1) - \bar(d_sj)]}
 where \cr

@@ -1,9 +1,9 @@
-############################################################
-# PACKAGE for clustering validity checking indices        #
-#                                                          #
-# 	                  	                                   #
-#	March 2012                      	                       #
-############################################################
+#################################################################
+# PACKAGE for determining the number of clusters in a dataset   #
+#                                                               #
+# 	                  	                                        #
+#	                      June 2012	                            #
+#################################################################
 
 NbClust <- function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=15, method = "ward", index = "all", alphaBeale = 0.1)
 {
@@ -15,7 +15,7 @@ NbClust <- function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=
     jeu <- na.omit(jeu1) # returns the object with incomplete cases removed 
     nn <- numberObsAfter <- dim(jeu)[1]
     pp <- dim(jeu)[2]
-    TT <- t(jeu)%*%jeu   # produit scalaire entre t(jeu) et jeu.
+    TT <- t(jeu)%*%jeu   
     sizeEigenTT <- length(eigen(TT)$value)
     eigenValues <- eigen(TT/(nn-1))$value
     for (i in 1:sizeEigenTT) 
@@ -32,7 +32,7 @@ NbClust <- function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=
     		if (s1[i]!=0) 
           ss[i]=s1[i]
     }
-    vv <- prod(ss)  # Produit des racines des valeurs propres non nulles
+    vv <- prod(ss)  
     
   #######################################################################################################################
   ##################                             Choix de la distance                               #####################
@@ -79,7 +79,7 @@ NbClust <- function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=
       } 
       else
 		  {
-    		md <- diss # Si aucune distance n'est spécifiée, considérer la matrice des dissimilarités
+    		md <- diss 
 		  }	
 	}
   
@@ -1387,13 +1387,13 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   ########### Rubin - 11e colonne de res ############
    if (any(indice == 10) || (indice == 31) || (indice == 32))
 	{     	  
-	  res[nc-min_nc+1,11] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$rubin
+    res[nc-min_nc+1,11] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$rubin
 	}
                     
  
   ########### Indices.WKWL-duda - 15e colonne de res ############
 	if (any(indice == 14) || (indice == 31) || (indice == 32))
-	{    	  
+	{  
 	  res[nc-min_nc+1,15] <- Indices.WKWL(x=jeu,cl1=cl1,cl2=cl2)$duda	
 	}
 	
@@ -1401,7 +1401,10 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   ########### Indices.WKWL-pseudot2 - 16e colonne de res ############
 	if (any(indice == 15) || (indice == 31) || (indice == 32))
 	{   	  
-	  res[nc-min_nc+1,16] <- Indices.WKWL(x=jeu,cl1=cl1,cl2=cl2)$pseudot2	
+    if(method==8)
+      res[nc-min_nc+1,16] <-NA
+    else
+	    res[nc-min_nc+1,16] <- Indices.WKWL(x=jeu,cl1=cl1,cl2=cl2)$pseudot2	
 	}
   
   ########### Indices.WKWL-beale - 17e colonne de res ############
@@ -1418,11 +1421,26 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	  NL <- Indices.WKWL(x=jeu,cl1=cl1,cl2=cl2)$NL
   	zz <- 3.20 # Best standard score in Milligan and Cooper 1985
   	zzz <- zz*sqrt(2*(1-8/((pi^2)*pp))/(NM*pp))
-	  if (any(indice == 14) || (indice == 15) || (indice == 31) || (indice == 32))
+    
+
+    
+	  if (any(indice == 14) || (indice == 31) || (indice == 32))
 	  {
-  	  	resCritical[nc-min_nc+1,2] <- critValue <- 1-(2/(pi*pp))-zzz
-  	  	resCritical[nc-min_nc+1,3] <- ((1-critValue)/critValue)*(NK+NL-2)
+	     	resCritical[nc-min_nc+1,2] <- critValue <- 1-(2/(pi*pp))-zzz
 	  }
+    
+	  if ((indice == 15)|| (indice == 31) || (indice == 32))
+	  {
+	    if(method==8)
+	       resCritical[nc-min_nc+1,3] <-NA
+	    else
+	    {
+	      critValue <- 1-(2/(pi*pp))-zzz
+	      resCritical[nc-min_nc+1,3] <- ((1-critValue)/critValue)*(NK+NL-2)
+	    }
+	  }
+    
+    
 	  if (any(indice == 16) || (indice == 31) || (indice == 32))
 	  {
 	  	df2 <- (NM-2)*pp
@@ -1514,8 +1532,11 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
      
      ########### Indice.Frey - 22e colonne de res ############
       if (any(indice == 21) || (indice == 31) || (indice == 32))
-	   {   	     
-	     res[nc-min_nc+1,22] <- Index.15and28(cl1=cl1,cl2=cl2,md=md)$frey
+	   {      
+          if(method==8)
+            res[nc-min_nc+1,22] <-NA
+          else
+            res[nc-min_nc+1,22] <- Index.15and28(cl1=cl1,cl2=cl2,md=md)$frey
 	   }
 
      ########### Indice.McClain - 23e colonne de res ############
@@ -1526,8 +1547,11 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	    
 	   ########### Indice.Gamma - 24e colonne de res ############ 
 	     if (any(indice == 23) || (indice == 32))
-	   {   	     
-	     res[nc-min_nc+1,24] <- Index.sPlussMoins(cl1=cl1,md=md)$gamma
+	   {            
+       if(method==8)   
+         res[nc-min_nc+1,24] <-NA
+       else
+	       res[nc-min_nc+1,24] <- Index.sPlussMoins(cl1=cl1,md=md)$gamma
 	   }
 
      ########### Indice.Gplus- 25e colonne de res ############
@@ -1671,58 +1695,75 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   
    if (any(indice == 14) || (indice == 31) || (indice == 32))
 	{
-     foundDuda <- FALSE
-      for (ncD in min_nc:max_nc)
-      {
-      #if ((res[ncD-min_nc+1,15]<=1) && (res[ncD-min_nc+1,15]>=resCritical[ncD-min_nc+1,2]) && (!foundDuda)){
-      if ((res[ncD-min_nc+1,15]>=resCritical[ncD-min_nc+1,2]) && (!foundDuda))
-      {
-          ncDuda <- ncD
-     	  indiceDuda <- res[ncD-min_nc+1,15]
-    	  foundDuda <- TRUE
-    	  }
-     }
-     if (foundDuda)
-     {
-  	 nc.Duda <- ncDuda
-  	 indice.Duda <- indiceDuda
-      }
-      else
-      {
-  	    nc.Duda <- NA
-  	    indice.Duda <- NA
-      }
-    }
+        
+        foundDuda <- FALSE
+        for (ncD in min_nc:max_nc)
+        {
+           
+           if ((res[ncD-min_nc+1,15]>=resCritical[ncD-min_nc+1,2]) && (!foundDuda))
+           {
+             ncDuda <- ncD
+     	       indiceDuda <- res[ncD-min_nc+1,15]
+    	       foundDuda <- TRUE
+    	     }
+        }
+        if (foundDuda)
+        {
+  	      nc.Duda <- ncDuda
+  	      indice.Duda <- indiceDuda
+        }
+        else
+        {
+  	        nc.Duda <- NA
+  	        indice.Duda <- NA
+        }
+       
+     
+   }  
     
   nc.Pseudo<-indice.Pseudo<-0  
   # PSEUDOT2 - Choose the number of clusters via finding the smallest q such that: pseudot2 <= critical_value [SAS User's guide].
 	if (any(indice == 15) || (indice == 31) || (indice == 32))
 	{
+     if(method==8)
+     {
+       nc.Pseudo <- NA
+       indice.Pseudo <- NA
+     } 
+     else
+     {
      foundPseudo <- FALSE
-     for (ncP in min_nc:max_nc){
-      #if ((res[ncP-min_nc+1,16]>=0) && (res[ncP-min_nc+1,16]<=resCritical[ncP-min_nc+1,3]) && (!foundPseudo)){
-      if ((res[ncP-min_nc+1,16]<=resCritical[ncP-min_nc+1,3]) && (!foundPseudo)){
+     for (ncP in min_nc:max_nc)
+       {
+
+      if ((res[ncP-min_nc+1,16]<=resCritical[ncP-min_nc+1,3]) && (!foundPseudo))
+        {
           ncPseudo <- ncP
      	  indicePseudo <- res[ncP-min_nc+1,16]
     	  foundPseudo <- TRUE
     	  }
      }
-      if (foundPseudo){
+      if (foundPseudo)
+        {
   	 nc.Pseudo <- ncPseudo
   	 indice.Pseudo <- indicePseudo
-      }else{
+      }
+     else
+        {
   	    nc.Pseudo <- NA
   	    indice.Pseudo <- NA
       }
-   }
+    }
+  }
   
   nc.Beale<-indice.Beale<-0
   	if (any(indice == 16) || (indice == 31) || (indice == 32))
 	{
   # BEALE - Choose the number of clusters via finding the smallest q such that: Fvalue_beale >= 0.1 [Gordon (1999)].
      foundBeale <- FALSE
-     for (ncB in min_nc:max_nc){
-      #if ((res[ncB-min_nc+1,17]<=1) && (!foundBeale)){
+     for (ncB in min_nc:max_nc)
+       {
+     
       if ((resCritical[ncB-min_nc+1,4]>=alphaBeale) && (!foundBeale)){
           ncBeale <- ncB
      	  indiceBeale <- res[ncB-min_nc+1,17]
@@ -1754,13 +1795,19 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   # FREY AND VAN GROENEWOUD - The best results occured when clustering was continued until the ratio fell below 1.00 for the last 
   #			      series of times. At this point, the cluster level before this series was taken as the optimal partition. 
   #			      If the ration never fell below 1.00, a one cluster solution was assumed [29].
+     if(method==8)
+     {
+       nc.Frey <-NA
+       indice.Frey <-NA
+     }   
+     else
+     {   
+     
      foundFrey <- FALSE
      i<-1
      for (ncF in min_nc:max_nc)
      {
-      #if ((res[ncF-min_nc+1,22] != NA) && (res[ncF-min_nc+1,22] < 1)) 
-        
-         #print(paste("ncF=", ncF ))
+  
          if (is.na(res[ncF-min_nc+1,22]))
          {   
            #print(paste("pb"))       
@@ -1806,8 +1853,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
       {
   	    nc.Frey <- NA
   	    indice.Frey <- NA
+  	    print(paste("No clustering structure in this data set"))
       }
-      
+     }
       #print(paste("nc.Frey =", nc.Frey ))
       #print(paste("indice.Frey =", indice.Frey ))
    }  
@@ -1825,9 +1873,17 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
    nc.Gamma<-indice.Gamma<-0
    if (any(indice == 23) || (indice == 31) || (indice == 32))
 	{
-    # GAMMA - Maximum values were taken to represent the correct hierarchy level [29].
-  nc.Gamma <- (min_nc:max_nc)[which.max(res[,24])]
-  indice.Gamma <- max(res[,24],na.rm = TRUE)
+     if(method==8)
+     {
+       nc.Gamma <-NA
+       indice.Gamma <-NA
+     }   
+     else
+     { 
+       # GAMMA - Maximum values were taken to represent the correct hierarchy level [29].
+       nc.Gamma <- (min_nc:max_nc)[which.max(res[,24])]
+       indice.Gamma <- max(res[,24],na.rm = TRUE)
+     }   
   }
 
    nc.Gplus<-indice.Gplus<-0
@@ -2003,8 +2059,6 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
    if (any(indice == 27) || (indice == 31) || (indice == 32)) 
 	 {       
 	   # Hubert - 
-     #nc.Hubert  <- DiffLev[,1][which.max(DiffLev[,10])]
-	   #indice.Hubert  <- max(DiffLev[,10],na.rm = TRUE)
      nc.Hubert  <- 0
      indice.Hubert  <- 0
      x11()
@@ -2054,9 +2108,38 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
  {
      indice2 <- indice + 1
      res <- res[,c(1,indice2)]
-
-     if (indice == 14) { resCritical <- resCritical[,c(1,2)] }
-     if (indice == 15) { resCritical <- resCritical[,c(1,3)] }
+     if (indice == 15) 
+     { 
+       if(method==8)
+       {   
+         res<-NA
+         resCritical <- NA
+         print(paste("Pseudot2 index can be applied only to hierarchical methods "))
+       }  
+       else
+         resCritical <- resCritical[,c(1,3)]
+     
+     }
+     
+     if((indice==21))
+     {   
+       if(method==8)
+       { 
+         res<-NA
+         print(paste("Frey index can be applied only to hierarchical methods "))
+       }   
+     }
+     
+     if((indice==23))
+     {   
+       if(method==8)
+       { 
+         res<-NA
+         print(paste("Gamma index can be applied only to hierarchical methods "))
+       }   
+     }
+     if (indice == 14) {resCritical <- resCritical[,c(1,2)]  }
+     #if (indice == 15) { resCritical <- resCritical[,c(1,3)] }
      if (indice == 16) { resCritical <- resCritical[,c(1,4)] }
      if (indice == 20) { resCritical <- resCritical[,c(1,5)] }        
    
@@ -2066,12 +2149,23 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   { 
       res <- res[,c(1:20,22:23,27:31)]
 		  resCritical <- resCritical[,c(1:4)]
+      if(method==8)
+      {
+        print(paste("Pseudot2 and Frey indices can be applied only to hierarchical methods "))      
+        
+      }
+        
       		  
   }
 
  if (indice == 32)
   { res <- res
 	  resCritical <- resCritical 	
+    if(method==8)
+    {
+      print(paste("Pseudot2, Gamma and Frey indices can be applied only to hierarchical methods "))      
+      
+    }
 	 }
   
 
