@@ -628,7 +628,30 @@ NbClust(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=6,
 NbClust(data, diss="NULL", distance = "manhattan", min.nc=2, max.nc=6, 
             method = "complete", index = "all", alphaBeale = 0.1) 
             ## Only indices with low computational cost (26 indices).
-             
+
+## Examples with a dissimilarity matrix
+x<-rbind(matrix(rnorm(150,sd=0.3),ncol=3),
+          matrix(rnorm(150,mean=3,sd=0.2),ncol=3),
+          matrix(rnorm(150,mean=5,sd=0.3),ncol=3))
+diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
+NbClust(x, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward", index = "ch", alphaBeale = 0.1)  
+
+
+data<-iris[,-c(5)]
+diss_matrix<- dist(data, method = "euclidean", diag=FALSE)
+NbClust(data, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward", index = "all", alphaBeale = 0.1)   
+      
+      
+x<-rbind(matrix(rnorm(20,sd=0.1),ncol=2),
+         matrix(rnorm(20,mean=1,sd=0.2),ncol=2),
+         matrix(rnorm(20,mean=5,sd=0.1),ncol=2),
+         matrix(rnorm(20,mean=7,sd=0.2),ncol=2))
+diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
+NbClust(x, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward", index = "alllong", alphaBeale = 0.1)  
+
 }
 \author{
   Malika Charrad, Nadia Ghazzali, Veronique Boiteau and Azam Niknafs  

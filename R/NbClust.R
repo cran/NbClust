@@ -400,12 +400,13 @@ Index.SDbw<-function(x, cl)
 #####################################################################
 
 
-Index.dunn <- function(distance=NULL, clusters, Data=NULL, method="euclidean")
+Index.dunn <- function(md, clusters, Data=NULL, method="euclidean")
 {
 
-  if (is.null(distance) & is.null(Data)) stop("One of 'distance' or 'Data' is required")
-  if (is.null(distance)) distance <- as.matrix(dist(Data, method=method))
-  if (class(distance)=="dist") distance <- as.matrix(distance)
+  #if (is.null(distance) & is.null(Data)) stop("One of 'distance' or 'Data' is required")
+  #if (is.null(distance)) distance <- as.matrix(dist(Data, method=method))
+  #if (class(distance)=="dist") distance <- as.matrix(distance)
+  distance <- as.matrix(md)
   nc <- max(clusters)
   interClust <- matrix(NA, nc, nc)
   intraClust <- rep(NA, nc)
@@ -1569,7 +1570,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
      ########### Indices.Dunn  - 27e colonne de res ############
      if (any(indice == 26 ) || (indice == 31) || (indice == 32))
 	   {    	    
-	     res[nc-min_nc+1,27] <- Index.dunn(distance=md, cl1, Data=jeu, method=NULL)	
+	     res[nc-min_nc+1,27] <- Index.dunn(md, cl1, Data=jeu, method=NULL)	
 	   } 
     
      ########### Indices.Hubert - 28e colonne de res ############
