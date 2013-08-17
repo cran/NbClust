@@ -325,7 +325,7 @@ density.bw<-function(cl, x)
          if(max(density.clust[u], density.clust[v])!=0)
             S=S+ (density.bw[u,v]/max(density.clust[u], density.clust[v]))
        }   
-     density.bw<-S/k*(k-1)
+     density.bw<-S/(k*(k-1))
      return(density.bw) 
   
  }      
@@ -355,76 +355,6 @@ Dis <- function (cl, x)
     return(Dis)
 }  
  
-
-Index.sdindex<-function(x, clmax, cl)
-{  
-  x <- as.matrix(x)
-  Alpha<-Dis(clmax,x)
-  Scatt<-Average.scattering(cl,x)$scatt
-  Dis0<-Dis(cl,x)
-  SD.indice<-Alpha*Scatt + Dis0
-  return(SD.indice)
-}
-    
-Index.SDbw<-function(x, cl)
-{
-    x <- as.matrix(x)
-    Scatt<-Average.scattering(cl,x)$scatt
-    Dens.bw<-density.bw(cl,x)
-    SDbw<-Scatt+Dens.bw
-    return(SDbw)
-}    
-
-    
-#####################################################################
-## D index  
-## Value to be maximized  (pic)
-#####################################################################
-    
-    Index.Dindex<- function(cl, x)
-    {
-      x <- as.matrix(x)
-      distance<-density.clusters(cl, x)$distance
-      n<-length(distance)
-      S<-0
-      for(i in 1:n)
-        S<-S+distance[i]
-      inertieIntra<-S/n
-      return(inertieIntra)
-    }    
-    
-
-#####################################################################
-## Dunn index  
-## Value in [0,infty], to be maximized
-#####################################################################
-
-
-Index.dunn <- function(md, clusters, Data=NULL, method="euclidean")
-{
-
-  #if (is.null(distance) & is.null(Data)) stop("One of 'distance' or 'Data' is required")
-  #if (is.null(distance)) distance <- as.matrix(dist(Data, method=method))
-  #if (class(distance)=="dist") distance <- as.matrix(distance)
-  distance <- as.matrix(md)
-  nc <- max(clusters)
-  interClust <- matrix(NA, nc, nc)
-  intraClust <- rep(NA, nc)
-
-  for (i in 1:nc) 
-    {
-    c1 <- which(clusters==i)
-    for (j in i:nc) {
-      if (j==i) intraClust[i] <- max(distance[c1,c1])
-      if (j>i) {
-        c2 <- which(clusters==j)
-        interClust[i,j] <- min(distance[c1,c2])
-      }
-    }
-  }
-  dunn <- min(interClust,na.rm=TRUE)/max(intraClust)
-  return(dunn)
-}
 
 
         
@@ -737,7 +667,7 @@ Indices.WKWL <- function (x,cl1=cl1,cl2=cl2)
 ### Indices ccc, scott, marriot, trcovw, tracew, friedman and rubin
 #####################################################################    
 
-Indices.WBT <- function(x,cl,T,s,vv) 
+Indices.WBT <- function(x,cl,P,s,vv) 
 {
   n <- dim(x)[1]
   pp <- dim(x)[2]
@@ -747,24 +677,26 @@ Indices.WBT <- function(x,cl,T,s,vv)
 
   for (i in 1:n)
     for (j in 1:qq)
-      {
-	z[i,j]==0
-	if (clX[i,1]==j) {z[i,j]=1}
-      }
+    {
+	    z[i,j]==0
+	    if (clX[i,1]==j) 
+	    {z[i,j]=1}
+    }
 
   xbar <- solve(t(z)%*%z)%*%t(z)%*%x
   B <- t(xbar)%*%t(z)%*%z%*%xbar
-  W <- T-B
-
-  scott <- n*log(det(T)/det(W))
+  W <- P-B
   marriot <- (qq^2)*det(W)
   trcovw <- sum(diag(cov(W)))
   tracew <- sum(diag(W))
+  if(det(W)!=0)
+     scott <- n*log(det(P)/det(W))
+  else {print("Error: division by zero!")}
   friedman <- sum(diag(solve(W)*B))
-  rubin <- sum(diag(T))/sum(diag(W))
+  rubin <- sum(diag(P))/sum(diag(W))
   
 
-  R2 <- 1-sum(diag(W))/sum(diag(T))
+  R2 <- 1-sum(diag(W))/sum(diag(P))
   v1 <- 1
   u <- rep(0,pp)
   c <- (vv/(qq))^(1/pp)
@@ -1258,7 +1190,79 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     resul
 }
 
-
+###########################################################
+#               sdindex, sdbw, dunn                       # 
+###########################################################    
+    Index.sdindex<-function(x, clmax, cl)
+    {  
+      x <- as.matrix(x)
+      Alpha<-Dis(clmax,x)
+      Scatt<-Average.scattering(cl,x)$scatt
+      Dis0<-Dis(cl,x)
+      SD.indice<-Alpha*Scatt + Dis0
+      return(SD.indice)
+    }
+    
+    Index.SDbw<-function(x, cl)
+    {
+      x <- as.matrix(x)
+      Scatt<-Average.scattering(cl,x)$scatt
+      Dens.bw<-density.bw(cl,x)
+      SDbw<-Scatt+Dens.bw
+      return(SDbw)
+    }    
+    
+    
+    #####################################################################
+    ## D index  
+    ## Value to be maximized  (pic)
+    #####################################################################
+    
+    Index.Dindex<- function(cl, x)
+    {
+      x <- as.matrix(x)
+      distance<-density.clusters(cl, x)$distance
+      n<-length(distance)
+      S<-0
+      for(i in 1:n)
+        S<-S+distance[i]
+      inertieIntra<-S/n
+      return(inertieIntra)
+    }    
+    
+    
+    #####################################################################
+    ## Dunn index  
+    ## Value in [0,infty], to be maximized
+    #####################################################################
+    
+    
+    Index.dunn <- function(md, clusters, Data=NULL, method="euclidean")
+    {
+      
+      #if (is.null(distance) & is.null(Data)) stop("One of 'distance' or 'Data' is required")
+      #if (is.null(distance)) distance <- as.matrix(dist(Data, method=method))
+      #if (class(distance)=="dist") distance <- as.matrix(distance)
+      distance <- as.matrix(md)
+      nc <- max(clusters)
+      interClust <- matrix(NA, nc, nc)
+      intraClust <- rep(NA, nc)
+      
+      for (i in 1:nc) 
+      {
+        c1 <- which(clusters==i)
+        for (j in i:nc) {
+          if (j==i) intraClust[i] <- max(distance[c1,c1])
+          if (j>i) {
+            c2 <- which(clusters==j)
+            interClust[i,j] <- min(distance[c1,c2])
+          }
+        }
+      }
+      dunn <- min(interClust,na.rm=TRUE)/max(intraClust)
+      return(dunn)
+    }
+    
 
 
 
@@ -1352,43 +1356,43 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
    ########### Cubic Clustering Criterion-CCC  - 5e colonne de res ############
   if (any(indice == 4) || (indice == 31) || (indice == 32))
 	{    	  
-	  res[nc-min_nc+1,5] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$ccc
+	  res[nc-min_nc+1,5] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$ccc
 	}
 
   ########### Scott and Symons - 6e colonne de res ############
 	if (any(indice == 5) || (indice == 31) || (indice == 32))
 	{     	  
-	  res[nc-min_nc+1,6] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$scott
+	  res[nc-min_nc+1,6] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$scott
 	}
 
 	########### Marriot - 7e colonne de res ############
 	if (any(indice == 6) || (indice == 31) || (indice == 32))
 	{   	  
-	  res[nc-min_nc+1,7] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$marriot
+	  res[nc-min_nc+1,7] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$marriot
 	}	
 	
 	########### Trace Cov W - 8e colonne de res ############
 	if (any(indice == 7) || (indice == 31) || (indice == 32))
 	{   	 
-	  res[nc-min_nc+1,8] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$trcovw	  
+	  res[nc-min_nc+1,8] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$trcovw	  
 	}
 
   ########### Trace W - 9e colonne de res ############
 	if (any(indice == 8) || (indice == 31) || (indice == 32))
 	{  	  
-	  res[nc-min_nc+1,9] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$tracew
+	  res[nc-min_nc+1,9] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$tracew
 	}
 	
 	########### Friedman - 10e colonne de res ############
  	if (any(indice == 9) || (indice == 31) || (indice == 32))
 	{     	  
-	  res[nc-min_nc+1,10] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$friedman
+	  res[nc-min_nc+1,10] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$friedman
 	}
           
   ########### Rubin - 11e colonne de res ############
    if (any(indice == 10) || (indice == 31) || (indice == 32))
 	{     	  
-    res[nc-min_nc+1,11] <- Indices.WBT(x=jeu, cl=cl1, T=TT,s=ss,vv=vv)$rubin
+    res[nc-min_nc+1,11] <- Indices.WBT(x=jeu, cl=cl1, P=TT,s=ss,vv=vv)$rubin
 	}
                     
  
@@ -2062,7 +2066,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	   # Hubert - 
      nc.Hubert  <- 0
      indice.Hubert  <- 0
-     x11()
+     #x11()
      par(mfrow = c(1,2))
      plot(res[,1],res[,28], tck=0, type="b", col="red", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Index Value")), main="Normalized Hubert Statistic" )
      plot(DiffLev[,1],DiffLev[,10], tck=0, type="b", col="blue", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Index Value")), main="Second Differences of Hubert index" )
@@ -2084,7 +2088,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 
      nc.Dindex <- 0
      indice.Dindex<- 0
-     x11()
+     #x11()
      par(mfrow = c(1,2))
      plot(res[,1],res[,30], tck=0, type="b", col="red", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Index Value")), main="Dindex")
      plot(DiffLev[,1],DiffLev[,12], tck=0, type="b", col="blue", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Index Value")), main="Second Differences of D index" )
