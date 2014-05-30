@@ -1,17 +1,16 @@
 Package: NbClust
 Type: Package
-Title: An examination of indices for determining the number of clusters
-        : NbClust Package
-Version: 1.4
-Date: 2013-08-17
+Title: NbClust package for determining the best number of clusters
+Version: 2.0
+Date: 2014-05-30
 Author: Malika Charrad <malika.charrad.1@ulaval.ca> and
-                Nadia Ghazzali <nadia.ghazzali@mat.ulaval.ca> and 
- 	        Veronique Boiteau <veronique.boiteau.1@ulaval.ca> and
-	        Azam Niknafs <azam.niknafs.1@ulaval.ca> 
+           Nadia Ghazzali <nadia.ghazzali@uqtr.ca> and
+           Veronique Boiteau <veronique.boiteau.1@ulaval.ca> and
+	   Azam Niknafs <azam.niknafs.1@ulaval.ca> 
 Maintainer: Malika Charrad <malika.charrad.1@ulaval.ca>
-Description: This package provides most of the popular indices for cluster validation ready to use for the outputs produced by functions coming from the same package. It also proposes to user the best clustering scheme from the different results obtained by varying all combinations of number of clusters, distance measures, and clustering methods.       
+Description: NbClust package provides 30 indices for determining the optimal number of clusters in a dataset. 
 License: GPL-2
-Packaged: 2013-08-17 12:00:06 UTC; Administrateur
+Packaged: 2014-05-30 13:18:45 UTC; toshiba
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-08-17 15:43:13
+Date/Publication: 2014-05-30 16:17:15
