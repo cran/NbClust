@@ -3,13 +3,13 @@
 \title{NbClust Package for determining the best number of clusters}
 \description{\code{NbClust} package provides 30 indices for determining the number of clusters and proposes to user the best clustering scheme from the different results obtained by varying all combinations of number of clusters, distance measures, and clustering methods. 
 }
-\usage{NbClust(data, diss = "NULL", distance = "euclidean", min.nc = 2, max.nc =15, 
+\usage{NbClust(data, diss = NULL, distance = "euclidean", min.nc = 2, max.nc =15, 
 
-method = "ward", index =  "all", alphaBeale = 0.1)
+method = "ward.D2", index =  "all", alphaBeale = 0.1)
 }
 \arguments{
   \item{data}{matrix or dataset (the only mandatory argument)}
-  \item{diss}{dissimilarity matrix to be used. By default, \code{diss="NULL"}, but if it is replaced by a dissimilarity matrix, distance should be "NULL".
+  \item{diss}{dissimilarity matrix to be used. By default, \code{diss=NULL}, but if it is replaced by a dissimilarity matrix, distance should be "NULL".
 }
   \item{distance}{the distance measure to be used to compute the dissimilarity matrix. This must be one of: "euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski" or "NULL". By default, distance="euclidean". 
 If the distance is "NULL", the dissimilarity matrix (diss) should be given by the user. If distance is not "NULL", the dissimilarity matrix should be "NULL".}
@@ -40,11 +40,8 @@ If the distance is "NULL", the dissimilarity matrix (diss) should be given by th
    \item \bold{Notes on the "method" argument\cr}
   The following aggregation methods are available in this package. 
   \itemize{
-      \item \bold{Ward} : Ward method minimizes the total within-cluster variance. At each step the pair of clusters with minimum cluster distance are merged. 
-      To implement this method, at each step find the pair of clusters that leads to minimum increase in total within-cluster variance after merging.
-      This increase is a weighted squared distance between cluster centers. The initial cluster distances in Ward minimum variance method are defined to be the squared Euclidean distance between points:   
-\deqn{D_{ij}=\left\|x_{i}-y_{j}\right\|^{2}}{D_ij=||x_i - y_j||^2}
-
+      \item \bold{Ward} : Ward method minimizes the total within-cluster variance. At each step the pair of clusters with minimum cluster distance are merged. To implement this method, at each step find the pair of clusters that leads to minimum increase in total within-cluster variance after merging.
+			Two different algorithms are found in the literature for Ward clustering. The one used by option "ward.D" (equivalent to the only Ward option "ward" in R versions <= 3.0.3) does not implement Ward's (1963) clustering criterion, whereas option "ward.D2" implements that criterion (Murtagh and Legendre 2013). With the latter, the dissimilarities are squared before cluster updating.
 \item \bold{Single} : The distance \eqn{D_{ij}}{D_ij} between two clusters \eqn{C_{i}}{C_i} and \eqn{C_{j}}{C_j} is the minimum distance between two points \eqn{x} and \eqn{y}, with \eqn{x \in C_{i}, y \in C_{j}}{x in C_i, y in C_j}. 
 \deqn{D_{ij}=min_{x\in C_{i}, y\in C_{j}}d(x,y)}{D_ij= min d(x,y), x in C_i and y in C_j}
     A drawback of this method is the so-called chaining phenomenon: clusters may be forced together due to single elements being close to each other, even though many of the elements in each cluster may be very distant to each other.
@@ -172,7 +169,7 @@ x<-rbind(matrix(rnorm(150,sd=0.3),ncol=3),
           matrix(rnorm(150,mean=3,sd=0.2),ncol=3),
           matrix(rnorm(150,mean=5,sd=0.3),ncol=3))
 NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
-            method = "ward", index = "dindex")
+            method = "ward.D2", index = "dindex")
 
 ## A 5-dimensional example
 x<-rbind(matrix(rnorm(150,sd=0.3),ncol=5),
@@ -181,90 +178,82 @@ x<-rbind(matrix(rnorm(150,sd=0.3),ncol=5),
           matrix(rnorm(150,mean=6,sd=0.3),ncol=5),
           matrix(rnorm(150,mean=9,sd=0.3),ncol=5))
 NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
-            method = "ward", index = "all", alphaBeale = 0.1)
+            method = "ward.D", index = "all")
 
 ## A real data example
 data<-iris[,-c(5)] 
-NbClust(data, distance = "euclidean", min.nc=2, max.nc=6, 
-            method = "ward", index = "kl") ## KL index
+NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
+            method = "ward.D2", index = "kl") 
             
-NbClust(data, distance = "euclidean", min.nc=2, max.nc=6, 
+NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
             method = "kmeans", index = "hubert")
 
-NbClust(data, distance = "manhattan", min.nc=2, max.nc=6, 
-            method = "complete", index = "all", alphaBeale = 0.1) 
-## Only indices with low computational cost (26 indices).
+NbClust(data, diss=NULL, distance = "manhattan", min.nc=2, max.nc=6, 
+            method = "complete", index = "all") 
+
 
 ## Examples with a dissimilarity matrix
 x<-rbind(matrix(rnorm(150,sd=0.3),ncol=3),
           matrix(rnorm(150,mean=3,sd=0.2),ncol=3),
           matrix(rnorm(150,mean=5,sd=0.3),ncol=3))
-diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
-NbClust(x, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
-            method = "ward", index = "ch")  
+md<- dist(x, method = "euclidean", diag=FALSE)
+NbClust(x, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward.D", index = "ch")  
 
 
 data<-iris[,-c(5)]
-diss_matrix<- dist(data, method = "euclidean", diag=FALSE)
-NbClust(data, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
-            method = "ward", index = "all", alphaBeale = 0.1)   
+md<- dist(data, method = "euclidean", diag=FALSE)
+NbClust(data, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward.D2", index = "all")   
       
       
 x<-rbind(matrix(rnorm(20,sd=0.1),ncol=2),
          matrix(rnorm(20,mean=1,sd=0.2),ncol=2),
          matrix(rnorm(20,mean=5,sd=0.1),ncol=2),
          matrix(rnorm(20,mean=7,sd=0.2),ncol=2))
-diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
-NbClust(x, diss=diss_matrix, distance = "NULL", min.nc=2, max.nc=6, 
-            method = "ward", index = "alllong", alphaBeale = 0.1)  
+md<- dist(x, method = "euclidean", diag=FALSE)
+NbClust(x, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
+            method = "ward.D2", index = "alllong")  
 }
 \references{
- 1. Baker FB, Hubert LJ (1975). "Measuring the Power of Hierarchical Cluster Analysis." Journal of the American Statistical Association, 70(349), 31-38. URL http://www.jstor.org/stable/2285371.\cr
- 2. Ball GH, Hall DJ (1965). "ISODATA, A novel method of data analysis and pattern classification". Menlo Park: Stanford Research Institute. (NTIS No. AD 699616).\cr    
- 3. Beale EML (1969). Cluster analysis. Scientific Control Systems, London.\cr    
- 4. Bezdek J, Pal N (1998). "Some new indexes of cluster validity". IEEE transactions on systems, man and cybernetics, 28(3).\cr      
- 5. Brock G, Pihur V, Datta S, Datta S (2008). "clvalid: Validation of Clustering Results". R package version 0.6-4, URL http://cran.r-project.org/web/packages/clvalid.\cr
- 7. Calinski T, Harabasz J (1974). "A dendrite method for cluster analysis." Communications in Statistics - Theory and Methods, 3(1), 1-27. doi:10.1080/03610927408827101. URL \cr
+ 1. Baker FB, Hubert LJ (1975). "Measuring the Power of Hierarchical Cluster Analysis." Journal of the American Statistical Association, 70(349), 31-38. URL http://www.jstor.org/stable/2285371.\cr 
+ 2. Beale EML (1969). Cluster analysis. Scientific Control Systems, London.\cr    
+ 3. Bezdek J, Pal N (1998). "Some new indexes of cluster validity". IEEE transactions on systems, man and cybernetics, 28(3).\cr
+ 4. Calinski T, Harabasz J (1974). "A dendrite method for cluster analysis." Communications in Statistics - Theory and Methods, 3(1), 1-27. doi:10.1080/03610927408827101. URL \cr
 http://dx.doi.org/10.1080/03610927408827101. \cr
- 8. Chang F, Carey V, Qiu W, Zamar RH, Lazarus R, Wang X (2008). clues: Clustering Method Based on Local Shrinking. R package version 0.5-0, URL http://cran.r-project.org/
-web/packages/clues. \cr
- 9. Davies DL, Bouldin DW (1979). "A cluster separation measure". IEEE Transactions on Pattern Analysis and Machine Intelligence, 1(2), 224-227.\cr
- 10. Dimitriadou E (2009). "cclust: Convex Clustering Methods and Clustering Indexes". R package version 0.6-16, URL http://cran.r-project.org/web/packages/cclust/. \cr
- 11. Dimitriadou E, Dolnicar S, Weingessel A (2002). "An examination of indexes for determining the number of clusters in binary data sets". Psychometrika, 67(3), 137-160.\cr
- 12. Duda RO, Hart PE (1973). "Pattern classification and scene analysis". John Wiley and Sons, Inc., New York, USA. ISBN 0-471-22361-1.  \cr
- 13. Dunn J (1974). "Well separated clusters and optimal fuzzy partitions". Journal Cybern, pp. 95-104.  \cr
- 14. Edwards AWF, Cavalli-Sforza L (1965). "A method for cluster analysis". Biometrics, 21(2), 362-375.   \cr
- 15. Frey T, Van Groenewoud H (1972). "A cluster analysis of the D-squared matrix of white spruce stands in Saskatchewan based on the maximum-minimum principle". Journal of Ecology, 60(3), 873-886.  \cr    
- 16. Friedman HP, Rubin J (1967). "On some invariant criteria for grouping data". Journal of the American Statistical Association, 62(320), 1159-1178. \cr
- 17. Fukunaga K, Koontz WLG (1970). "A criterion and an algorithm for grouping data". IEEE Transactions on Computers, C-19(10), 917-923. \cr
- 18. Gordon A (1999). "Classification". 2nd edition. Chapman & Hall/CRC, London. ISBN 1-58488-013-9.   \cr
- 19. Halkidi M, Batistakis I, Vazirgiannis M (2001). "On clustering validation techniques". Journal of Intelligent Information Systems, 17(2/3), 107-145.   \cr    
- 20. Halkidi M, Vazirgiannis M (2001). "Clustering validity assessment: finding the optimal partitioning of a data set". Proceeding ICDM '01 Proceedings of the 2001 IEEE International Conference on Data Mining, pp. 187-194. \cr
- 21. Halkidi M, Vazirgiannis M, Batistakis I (2000). "Quality Scheme Assessment in the Clustering Process". PKDD2000, pp. 265-276. \cr
- 22. Hartigan JA (1975). Clustering Algorithms. John Wiley & Sons, Inc., New York, NY, USA. ISBN 047135645X. \cr
- 23. Hill RS (1980). "A stopping rule for partitioning dendrograms". Botanical Gazette, 141(3), 321-324. \cr
- 24. Hubert LJ, Arabie P (1985). "Comparing partitions". Journal of Classification, 2, 193-218. \cr
- 25. Hubert LJ, Levin JR (1976). "A General Statistical Framework for Assessing Categorical Clustering in Free Recall". Psychological Bulletin, 83(6), 1072-1080. \cr 
+ 5. Davies DL, Bouldin DW (1979). "A cluster separation measure". IEEE Transactions on Pattern Analysis and Machine Intelligence, 1(2), 224-227.\cr
+ 6. Dimitriadou E, Dolnicar S, Weingessel A (2002). "An examination of indexes for determining the number of clusters in binary data sets". Psychometrika, 67(3), 137-160.\cr
+ 7. Duda RO, Hart PE (1973). "Pattern classification and scene analysis". John Wiley and Sons, Inc., New York, USA. ISBN 0-471-22361-1.  \cr
+ 8. Dunn J (1974). "Well separated clusters and optimal fuzzy partitions". Journal Cybern, pp. 95-104.  \cr
+ 9. Edwards AWF, Cavalli-Sforza L (1965). "A method for cluster analysis". Biometrics, 21(2), 362-375.   \cr
+ 10. Frey T, Van Groenewoud H (1972). "A cluster analysis of the D-squared matrix of white spruce stands in Saskatchewan based on the maximum-minimum principle". Journal of Ecology, 60(3), 873-886.  \cr    
+ 11. Friedman HP, Rubin J (1967). "On some invariant criteria for grouping data". Journal of the American Statistical Association, 62(320), 1159-1178. \cr
+ 12. Fukunaga K, Koontz WLG (1970). "A criterion and an algorithm for grouping data". IEEE Transactions on Computers, C-19(10), 917-923. \cr
+ 13. Gordon A (1999). "Classification". 2nd edition. Chapman & Hall/CRC, London. ISBN 1-58488-013-9.   \cr
+ 14. Halkidi M, Batistakis I, Vazirgiannis M (2001). "On clustering validation techniques". Journal of Intelligent Information Systems, 17(2/3), 107-145.   \cr    
+ 15. Halkidi M, Vazirgiannis M (2001). "Clustering validity assessment: finding the optimal partitioning of a data set". Proceeding ICDM '01 Proceedings of the 2001 IEEE International Conference on Data Mining, pp. 187-194. \cr
+ 16. Halkidi M, Vazirgiannis M, Batistakis I (2000). "Quality Scheme Assessment in the Clustering Process". PKDD2000, pp. 265-276. \cr
+ 17. Hartigan JA (1975). Clustering Algorithms. John Wiley & Sons, Inc., New York, NY, USA. ISBN 047135645X. \cr
+ 18. Hill RS (1980). "A stopping rule for partitioning dendrograms". Botanical Gazette, 141(3), 321-324. \cr
+ 19. Hubert LJ, Arabie P (1985). "Comparing partitions". Journal of Classification, 2, 193-218. \cr
+ 20. Hubert LJ, Levin JR (1976). "A General Statistical Framework for Assessing Categorical Clustering in Free Recall". Psychological Bulletin, 83(6), 1072-1080. \cr 
     URL http://www.eric.ed.gov/ERICWebPortal/contentdelivery/servlet/ERICServlet?accno=ED116162. \cr
- 26. Kaufman L, Rousseeuw P (1990). Finding groups in data: an introduction to cluster analysis. Wiley, New York, NY, USA. \cr
- 27. Kraemer HC (1982). "Biserial Correlation", Encyclopaedia of Statistical Sciences, Volume 1. Wiley, pages 276-279. \cr
- 28. KrzanowskiWJ, Lai YT (1988)."A Criterion for Determining the Number of Groups in a Data Set Using Sum-of-Squares Clustering". Biometrics, 44(1), 23-34. doi:10.2307/2531893. \cr
- 29. Lebart L, Morineau A, Piron M (2000). Statistique exploratoire multidimensionnelle. Dunod, Paris, France. ISBN 2100053515. \cr
- 30. Marriot FHC (1971). "Practical problems in a method of cluster analysis." Biometrics, 27(3), 501-514. \cr
- 31. Milligan G (1981a). "A Monte Carlo study of thirty internal criterion measures for cluster analysis". Psychometrika, 46(2), 187-199. \cr
- 32. Milligan G, Cooper M (1985). "An examination of procedures for determining the number of clusters in a data set." Psychometrika, 50(2), 159-179. \cr
- 33. Milligan GW (1980). "An examination of the effect of six types of error perturbation on fifteen clustering algorithms". Psychometrika, 45(3), 325-342.  \cr
- 34. Nieweglowski L (2009). clv: Cluster Validation Techniques. R package version 0.3-2, URL http://cran.r-project.org/web/packages/clv.  \cr
- 35. Orloci L (1967). "An agglomerative method for classification of plant communities". Journal of Ecology, 55(1), 193-206.     \cr
- 36. Ratkowsky DA, Lance GN (1978). "A criterion for determining the number of groups in a classification". Australian Computer Journal, 10, 115-117. \cr
- 37. Rholf F (1974). "Methods of comparing classifications". Annual Review of Ecology and Systematics, 5, 101-113.     \cr  
-38. Rousseeuw P (1987). "Silhouettes: a graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics, 20, 53-65. \cr
-39. Sarle WS (1983). "SAS Technical Report A-108, Cubic clustering criterion". Cary, N.C.: SAS Institute Inc. \cr   
-40. Scott AJ, Symons MJ (1971). "Clustering methods based on likelihood ratio criteria". Biometrics, 27(2), 387-397.  \cr
-41. Sheikholeslami C, Chatterjee S, Zhang A (1998)."WaveCluster: A-MultiResolution Clustering Approach for Very Large Spatial Database." Proceedings of 24th VLDB Conference. \cr
-42. Theodoridis S, Koutroubas K (1999). "Pattern recognition". Academic Press. \cr
-43. Tibshirani R, Walther G, Hastie T (2001). "Estimating the number of clusters in a data set via the gap statistic". Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63(2), 411-423. doi:10.1111/1467-9868.00293. URL http://dx.doi.org/10.1111/1467-9868.00293.\cr
-44. Walesiak M, Dudek A (2011). "clusterSim: Searching for optimal clustering procedure for a data set". R package version 0.40-6, URL http://cran.r-project.org/web/packages/clusterSim. 
+ 21. Kaufman L, Rousseeuw P (1990). Finding groups in data: an introduction to cluster analysis. Wiley, New York, NY, USA. \cr
+ 22. Kraemer HC (1982). "Biserial Correlation", Encyclopaedia of Statistical Sciences, Volume 1. Wiley, pages 276-279. \cr
+ 23. KrzanowskiWJ, Lai YT (1988)."A Criterion for Determining the Number of Groups in a Data Set Using Sum-of-Squares Clustering". Biometrics, 44(1), 23-34. doi:10.2307/2531893. \cr
+ 24. Lebart L, Morineau A, Piron M (2000). Statistique exploratoire multidimensionnelle. Dunod, Paris, France. ISBN 2100053515. \cr
+ 25. Marriot FHC (1971). "Practical problems in a method of cluster analysis." Biometrics, 27(3), 501-514. \cr
+ 26. Milligan G, Cooper M (1985). "An examination of procedures for determining the number of clusters in a data set." Psychometrika, 50(2), 159-179. \cr
+ 27. Nieweglowski L (2009). clv: Cluster Validation Techniques. R package version 0.3-2, URL http://cran.r-project.org/web/packages/clv.  \cr
+ 28. Orloci L (1967). "An agglomerative method for classification of plant communities". Journal of Ecology, 55(1), 193-206.     \cr
+ 29. Ratkowsky DA, Lance GN (1978). "A criterion for determining the number of groups in a classification". Australian Computer Journal, 10, 115-117. \cr
+ 30. Rholf F (1974). "Methods of comparing classifications". Annual Review of Ecology and Systematics, 5, 101-113.     \cr  
+ 31. Rousseeuw P (1987). "Silhouettes: a graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics, 20, 53-65. \cr
+ 32. Sarle WS (1983). "SAS Technical Report A-108, Cubic clustering criterion". Cary, N.C.: SAS Institute Inc. \cr   
+ 33. Scott AJ, Symons MJ (1971). "Clustering methods based on likelihood ratio criteria". Biometrics, 27(2), 387-397.  \cr
+ 34. Theodoridis S, Koutroubas K (1999). "Pattern recognition". Academic Press. \cr
+ 35. Tibshirani R, Walther G, Hastie T (2001). "Estimating the number of clusters in a data set via the gap statistic". Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63(2), 411-423. doi:10.1111/1467-9868.00293. URL http://dx.doi.org/10.1111/1467-9868.00293.\cr
+ 36. Murtagh, F. and Legendre, P. (2013) Ward's Hierarchical Agglomerative Clustering Method: Which Algorithms Implement Ward's Criterion? Journal of Classification. 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

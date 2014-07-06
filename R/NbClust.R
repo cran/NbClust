@@ -1,4 +1,4 @@
-NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=15, method = "ward", index = "all", alphaBeale = 0.1)
+NbClust <-function(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=15, method = "ward.D2", index = "all", alphaBeale = 0.1)
 {
     x<-0
     min_nc <- min.nc
@@ -35,32 +35,42 @@ NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=1
   
 
  distance <- pmatch(distance, c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski","NULL"))
- if (is.na(distance)) 
- {
-	stop("invalid distance")
- }
+  
+ 
     
- if (distance == -1) 
- {
-	stop("ambiguous distance")
- }
+if(is.null(diss))
+{  
     
- if (((distance==1) || (distance==2) || (distance==3) || (distance==4) || (distance==5) || (distance==6)) && (diss[1] != "NULL")) {
-	stop("ambiguous distance or dissimilarity matrix")
-	} 
-    if (distance == 1) {
+  if (is.na(distance)) 
+  {
+    stop("invalid distance")
+  }
+  
+  if (distance == -1) 
+  {
+    stop("ambiguous distance")
+  }
+  
+  
+  
+    if (distance == 1) 
+    {
     		md <- dist(jeu, method="euclidean")	# "dist" function computes and returns the distance matrix computed by using the specified distance measure to compute the distances between the rows of a data matrix.
-	}
-    if (distance == 2) {
+	  }
+    if (distance == 2) 
+      {
     		md <- dist(jeu, method="maximum")	
 	}
-    if (distance == 3) {
+    if (distance == 3) 
+      {
     		md <- dist(jeu, method="manhattan")	
 	}
-    if (distance == 4) {
+    if (distance == 4) 
+      {
     		md <- dist(jeu, method="canberra")	
 	}
-    if (distance == 5) {
+    if (distance == 5) 
+      {
     		md <- dist(jeu, method="binary")	
 	}
     if (distance == 6) 
@@ -68,16 +78,19 @@ NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=1
     		md <- dist(jeu, method="minkowski")	
 	   }
 
-    if (distance == 7) 
-    {
+   if (distance == 7) 
+    {		  
+     stop("ambiguous distance or dissimilarity matrix")		
+    } 
+}
+
+if((!is.null(diss))&&((distance==1)||(distance==2)|| (distance==3)|| (distance==4)|| (distance==5)|| (distance==6)))
+    stop("dissimilarity matrix and distance are both not null")
+
+if((!is.null(diss))&&(is.null(distance)))
+  md <- diss 
 		  
-      if(is.null(diss))
-      {
-		    stop("ambiguous distance or dissimilarity matrix")		
-      } 
-    		md <- diss 
-		  
-	  }
+
   
     #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
     #                                                                                                                      #
@@ -85,8 +98,8 @@ NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=1
     #                                                                                                                      #
     #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
     
-  method <- pmatch(method, c("ward", "single", "complete", "average", 
-		"mcquitty", "median", "centroid", "kmeans"))
+  method <- pmatch(method, c("ward.D2", "single", "complete", "average", 
+		"mcquitty", "median", "centroid", "kmeans","ward.D"))
 
     res <- array(0, c(max_nc-min_nc+1,30))
     x_axis <- min_nc:max_nc
@@ -104,7 +117,7 @@ NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=1
 	     stop("ambiguous method")
     if (method == 1) 
     {
-        hc<-hclust(md,method = "ward")      
+        hc<-hclust(md,method = "ward.D2")      
     }
     if (method == 2) 
     {
@@ -135,6 +148,11 @@ NbClust <-function(data, diss="NULL", distance = "euclidean", min.nc=2, max.nc=1
         hc<-hclust(md,method = "centroid")
 		 
 	  }
+    if (method == 9) 
+    {
+      hc<-hclust(md,method = "ward.D")
+  
+    }
 
   
 
@@ -1087,7 +1105,7 @@ Indice.S <- function (d, cl)
     
     
 Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10, 
-    method = "ward", d = NULL, centrotypes = "centroids") 
+    method = "ward.D2", d = NULL, centrotypes = "centroids") 
 {
     GAP <- function(X, cl, referenceDistribution, B, method, 
         d, centrotypes) {
@@ -1133,9 +1151,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                 else if (method == "k-means") 
                   pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
                 else if (method == "single" || method == "complete" || 
-                  method == "average" || method == "ward" || 
+                  method == "average" || method == "ward.D2" || 
                   method == "mcquitty" || method == "median" || 
-                  method == "centroid") 
+                  method == "centroid"|| method=="ward.D") 
                   pp2 <- cutree(hclust(dist(Xnew), method = method), 
                     ClassNr)
                 else stop("Wrong clustering method")
@@ -1161,9 +1179,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                 else if (method == "k-means") 
                   pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
                 else if (method == "single" || method == "complete" || 
-                  method == "average" || method == "ward" || 
+                  method == "average" || method == "ward.D2" || 
                   method == "mcquitty" || method == "median" || 
-                  method == "centroid") 
+                  method == "centroid"||method == "ward.D") 
                   pp2 <- cutree(hclust(dist(Xnew), method = method), 
                     ClassNr)
                 else stop("Wrong clustering method")
@@ -1324,7 +1342,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
  {  
       
 	   if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-		  (method == 5) || (method == 6) || (method == 7)) 
+		  (method == 5) || (method == 6) || (method == 7)||(method == 9)) 
       {
 	      cl1 <- cutree(hc, k=nc)
 	      cl2 <- cutree(hc, k=nc+1)
@@ -1491,7 +1509,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	{
 	  
 	  if (method == 1) {
-		resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "ward", d = NULL, centrotypes = "centroids")
+		resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "ward.D2", d = NULL, centrotypes = "centroids")
 		}
 	  if (method == 2) {
 	    	resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "single", d = NULL, centrotypes = "centroids")
@@ -1510,6 +1528,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 		}
 	  if (method == 7) {
 	    	resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "centroid", d = NULL, centrotypes = "centroids")
+		}
+		if (method == 9) {
+		  resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "ward.D", d = NULL, centrotypes = "centroids")
 		}
 	  if (method == 8) {
 		resultSGAP <- Indice.Gap(x=jeu, clall=clall, reference.distribution = "unif", B = 10, method = "k-means", d = NULL, centrotypes = "centroids")
@@ -2237,7 +2258,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
       ########################## The Best partition    ###################
     
         if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-          (method == 5) || (method == 6) || (method == 7))         
+          (method == 5) || (method == 6) || (method == 7)||(method == 9))         
             partition<- cutree(hc, k=j)
     
         else
@@ -2253,7 +2274,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         ||(indice==28)||(indice==30))
     {
       if (any(method == 1) || (method == 2) || (method == 3) || (method == 4) || 
-            (method == 5) || (method == 6) || (method == 7)) 
+            (method == 5) || (method == 6) || (method == 7) || (method == 9)) 
       
         partition<- cutree(hc, k=best.nc)
       
