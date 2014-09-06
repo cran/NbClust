@@ -1,5 +1,6 @@
-NbClust <-function(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=15, method = "ward.D2", index = "all", alphaBeale = 0.1)
+NbClust <-function(data, diss=NULL, distance ="euclidean", min.nc=2, max.nc=15, method =NULL, index = "all", alphaBeale = 0.1)
 {
+    
     x<-0
     min_nc <- min.nc
     max_nc <- max.nc
@@ -33,63 +34,58 @@ NbClust <-function(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=15,
   #                                                                                                                      #
   #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
   
-
- distance <- pmatch(distance, c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski","NULL"))
+if(is.null(distance))
+  distanceM<-7
+if(!is.null(distance))
+  distanceM <- pmatch(distance, c("euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski"))
   
- 
+if (is.na(distanceM)) 
+{
+  stop("invalid distance")
+} 
     
 if(is.null(diss))
 {  
-    
-  if (is.na(distance)) 
-  {
-    stop("invalid distance")
-  }
-  
-  if (distance == -1) 
-  {
-    stop("ambiguous distance")
-  }
-  
-  
-  
-    if (distance == 1) 
+      
+    if (distanceM == 1) 
     {
     		md <- dist(jeu, method="euclidean")	# "dist" function computes and returns the distance matrix computed by using the specified distance measure to compute the distances between the rows of a data matrix.
 	  }
-    if (distance == 2) 
+    if (distanceM == 2) 
       {
     		md <- dist(jeu, method="maximum")	
 	}
-    if (distance == 3) 
+    if (distanceM == 3) 
       {
     		md <- dist(jeu, method="manhattan")	
 	}
-    if (distance == 4) 
+    if (distanceM == 4) 
       {
     		md <- dist(jeu, method="canberra")	
 	}
-    if (distance == 5) 
+    if (distanceM == 5) 
       {
     		md <- dist(jeu, method="binary")	
 	}
-    if (distance == 6) 
+    if (distanceM == 6) 
      {
     		md <- dist(jeu, method="minkowski")	
 	   }
 
-   if (distance == 7) 
+   if (distanceM == 7) 
     {		  
-     stop("ambiguous distance or dissimilarity matrix")		
+     stop("dissimilarity matrix and distance are both NULL")		
     } 
 }
 
-if((!is.null(diss))&&((distance==1)||(distance==2)|| (distance==3)|| (distance==4)|| (distance==5)|| (distance==6)))
-    stop("dissimilarity matrix and distance are both not null")
-
-if((!is.null(diss))&&(is.null(distance)))
-  md <- diss 
-		  
+if(!is.null(diss))
+{
+  if((distanceM==1)||(distanceM==2)|| (distanceM==3)|| (distanceM==4)|| (distanceM==5)|| (distanceM==6))
+stop("dissimilarity matrix and distance are both not null")
+  else
+    md <- diss
+}
+   
 
   
     #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
@@ -97,7 +93,8 @@ if((!is.null(diss))&&(is.null(distance)))
     #                                              Methods                                                                 #
     #                                                                                                                      #
     #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
-    
+  if(is.null(method))    
+    stop("method is NULL")
   method <- pmatch(method, c("ward.D2", "single", "complete", "average", 
 		"mcquitty", "median", "centroid", "kmeans","ward.D"))
 
@@ -154,6 +151,7 @@ if((!is.null(diss))&&(is.null(distance)))
   
     }
 
+   
   
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
@@ -1103,24 +1101,29 @@ Indice.S <- function (d, cl)
     #                                                                      #
     ######################################################################## 
     
-    
 Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10, 
     method = "ward.D2", d = NULL, centrotypes = "centroids") 
 {
-    GAP <- function(X, cl, referenceDistribution, B, method, 
-        d, centrotypes) {
-        simgap <- function(Xvec) {
+    GAP <- function(X, cl, referenceDistribution, B, method, d, centrotypes) 
+      {
+        set.seed(1)
+        simgap <- function(Xvec) 
+          {
             ma <- max(Xvec)
             mi <- min(Xvec)
+            set.seed(1)
             Xout <- runif(length(Xvec), min = mi, max = ma)
             return(Xout)
-        }
-        pcsim <- function(X, d, centrotypes) {
-            if (centrotypes == "centroids") {
+          }
+          pcsim <- function(X, d, centrotypes) 
+          {
+            if (centrotypes == "centroids") 
+            {
                 Xmm <- apply(X, 2, mean)
             }
             
-            for (k in (1:dim(X)[2])) {
+            for (k in (1:dim(X)[2])) 
+            {
                 X[, k] <- X[, k] - Xmm[k]
             }
             ss <- svd(X)
@@ -1132,7 +1135,8 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
             }
             return(Xt)
         }
-        if (is.null(dim(x))) {
+        if (is.null(dim(x))) 
+        {
             dim(x) <- c(length(x), 1)
         }
         ClassNr <- max(cl)
@@ -1149,7 +1153,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                 if (ClassNr == length(cl)) 
                   pp2 <- 1:ClassNr
                 else if (method == "k-means") 
+                { set.seed(1)
                   pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
+                }
                 else if (method == "single" || method == "complete" || 
                   method == "average" || method == "ward.D2" || 
                   method == "mcquitty" || method == "median" || 
@@ -1168,16 +1174,20 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
                       ClassNr)
                   }
                 }
-                if (ClassNr == 1) {
+                if (ClassNr == 1) 
+                {
                   Wk0 <- sum(diag(var(X)))
                   WkB[1, bb] <- sum(diag(var(Xnew)))
                 }
-            }
-            if (bb > 1) {
+             }
+             if (bb > 1) {
                 if (ClassNr == length(cl)) 
                   pp2 <- 1:ClassNr
-                else if (method == "k-means") 
+                else if (method == "k-means")
+                {
+                  set.seed(1)
                   pp2 <- kmeans(Xnew, ClassNr, 100)$cluster
+                }
                 else if (method == "single" || method == "complete" || 
                   method == "average" || method == "ward.D2" || 
                   method == "mcquitty" || method == "median" || 
@@ -1222,6 +1232,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     diffu <- gap - (gap2$Sgap - gap2$Sdgap)
     resul <- list(gap = gap, diffu = diffu)
     resul
+
 }
     
     
@@ -1364,17 +1375,22 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	   
   	if (method == 8) 
     {
+      set.seed(1)
 		  cl2 <- kmeans(jeu,nc+1)$cluster
+      set.seed(1)
 		  clmax <- kmeans(jeu,max_nc)$cluster
       if (nc > 2)
 		  {
+        set.seed(1)
 		    cl1 <- kmeans(jeu,nc)$cluster
 		    clall <- cbind(cl1, cl2)
+        set.seed(1)
 		    cl0 <- kmeans(jeu,nc-1)$cluster
 		    clall1 <- cbind(cl0, cl1, cl2)
 		  }
 	    if (nc == 2)
 		  {
+        set.seed(1)
 	      cl1 <- kmeans(jeu,nc)$cluster
 		    clall <- cbind(cl1, cl2)
 		    cl0 <- rep(1,nn)
@@ -2262,7 +2278,10 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
             partition<- cutree(hc, k=j)
     
         else
+        {
+            set.seed(1)
             partition<-kmeans(jeu,j)$cluster
+        }
     
     }
     
@@ -2279,8 +2298,10 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         partition<- cutree(hc, k=best.nc)
       
       else
+      {
+        set.seed(1)
         partition<-kmeans(jeu,best.nc)$cluster
-      
+      }
             
     }
       

@@ -5,7 +5,7 @@
 }
 \usage{NbClust(data, diss = NULL, distance = "euclidean", min.nc = 2, max.nc =15, 
 
-method = "ward.D2", index =  "all", alphaBeale = 0.1)
+method = NULL, index =  "all", alphaBeale = 0.1)
 }
 \arguments{
   \item{data}{matrix or dataset (the only mandatory argument)}
@@ -15,8 +15,8 @@ method = "ward.D2", index =  "all", alphaBeale = 0.1)
 If the distance is "NULL", the dissimilarity matrix (diss) should be given by the user. If distance is not "NULL", the dissimilarity matrix should be "NULL".}
   \item{min.nc}{minimal number of clusters, between 1  and (number of objects - 1)}
   \item{max.nc}{maximal number of clusters, between 2 and (number of objects - 1), greater or equal to min.nc. By default, max.nc=15.}
-  \item{method}{the cluster analysis method to be used. This should be one of: "ward", "single", "complete", "average", "mcquitty", "median", "centroid", "kmeans".}
-  \item{index}{the index to be calculated. This should be one of : "kl", "ch", "hartigan", "ccc", "scott", "marriot", "trcovw", "tracew", "friedman",  "rubin", "cindex",  "db", "silhouette", "duda", "pseudot2", "beale",  "ratkowsky", "ball", "ptbiserial", "gap", "frey", "mcclain", "gamma", "gplus", "tau", "dunn", "hubert", "sdindex", "dindex", "sdbw", "all" (all indices except GAP, Gamma, Gplus and Tau), "alllong" (all indices with GAP, Gamma, Gplus and Tau included).}
+  \item{method}{the cluster analysis method to be used. This should be one of: "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid", "kmeans".}
+  \item{index}{the index to be calculated. This should be one of : "kl", "ch", "hartigan", "ccc", "scott", "marriot", "trcovw", "tracew", "friedman",  "rubin", "cindex",  "db", "silhouette", "duda", "pseudot2", "beale",  "ratkowsky", "ball", "ptbiserial", "gap", "frey", "mcclain", "gamma", "gplus", "tau", "dunn", "hubert", "sdindex", "dindex", "sdbw", "all" (all indices except GAP, Gamma, Gplus and Tau), "alllong" (all indices with Gap, Gamma, Gplus and Tau included).}
   \item{alphaBeale}{significance value for Beale's index.}
 }
 \details{
@@ -156,64 +156,97 @@ clusters between min.nc and max.nc.}
 
 \examples{
 ## A 2-dimensional example
+set.seed(1)
 x<-rbind(matrix(rnorm(100,sd=0.1),ncol=2),
          matrix(rnorm(100,mean=1,sd=0.2),ncol=2),
          matrix(rnorm(100,mean=5,sd=0.1),ncol=2),
          matrix(rnorm(100,mean=7,sd=0.2),ncol=2))
          
-NbClust(x, distance = "euclidean", min.nc=2, max.nc=8, 
+res<-NbClust(x, distance = "euclidean", min.nc=2, max.nc=8, 
             method = "complete", index = "ch")
+            
+res$All.index
+res$Best.nc
+res$Best.partition
 
 ## A 3-dimensional example 
+set.seed(1)
 x<-rbind(matrix(rnorm(150,sd=0.3),ncol=3),
           matrix(rnorm(150,mean=3,sd=0.2),ncol=3),
           matrix(rnorm(150,mean=5,sd=0.3),ncol=3))
-NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
+res<-NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
             method = "ward.D2", index = "dindex")
+res$All.index
+
 
 ## A 5-dimensional example
+set.seed(1)
 x<-rbind(matrix(rnorm(150,sd=0.3),ncol=5),
           matrix(rnorm(150,mean=3,sd=0.2),ncol=5),
           matrix(rnorm(150,mean=1,sd=0.1),ncol=5),
           matrix(rnorm(150,mean=6,sd=0.3),ncol=5),
           matrix(rnorm(150,mean=9,sd=0.3),ncol=5))
-NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
+res<-NbClust(x, distance = "euclidean", min.nc=2, max.nc=10, 
             method = "ward.D", index = "all")
+res$All.index
+res$Best.nc
+res$All.CriticalValues
+res$Best.partition
 
 ## A real data example
 data<-iris[,-c(5)] 
-NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
+res<-NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
             method = "ward.D2", index = "kl") 
+res$All.index
+res$Best.nc
+res$Best.partition
             
-NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
+res<-NbClust(data, diss=NULL, distance = "euclidean", min.nc=2, max.nc=6, 
             method = "kmeans", index = "hubert")
+res$All.index
 
-NbClust(data, diss=NULL, distance = "manhattan", min.nc=2, max.nc=6, 
+
+res<-NbClust(data, diss=NULL, distance = "manhattan", min.nc=2, max.nc=6, 
             method = "complete", index = "all") 
-
+res$All.index
+res$Best.nc
+res$All.CriticalValues
+res$Best.partition
 
 ## Examples with a dissimilarity matrix
+set.seed(1)
 x<-rbind(matrix(rnorm(150,sd=0.3),ncol=3),
           matrix(rnorm(150,mean=3,sd=0.2),ncol=3),
           matrix(rnorm(150,mean=5,sd=0.3),ncol=3))
-md<- dist(x, method = "euclidean", diag=FALSE)
-NbClust(x, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
+diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
+res<-NbClust(x, diss=diss_matrix, distance = NULL, min.nc=2, max.nc=6, 
             method = "ward.D", index = "ch")  
-
+res$All.index
+res$Best.nc
+res$Best.partition
 
 data<-iris[,-c(5)]
-md<- dist(data, method = "euclidean", diag=FALSE)
-NbClust(data, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
+diss_matrix<- dist(data, method = "euclidean", diag=FALSE)
+NbClust(data, diss=diss_matrix, distance = NULL, min.nc=2, max.nc=6, 
             method = "ward.D2", index = "all")   
-      
-      
+res$All.index
+res$Best.nc
+res$All.CriticalValues
+res$Best.partition      
+    
+set.seed(1)    
 x<-rbind(matrix(rnorm(20,sd=0.1),ncol=2),
          matrix(rnorm(20,mean=1,sd=0.2),ncol=2),
          matrix(rnorm(20,mean=5,sd=0.1),ncol=2),
          matrix(rnorm(20,mean=7,sd=0.2),ncol=2))
-md<- dist(x, method = "euclidean", diag=FALSE)
-NbClust(x, diss=md, distance = "NULL", min.nc=2, max.nc=6, 
-            method = "ward.D2", index = "alllong")  
+diss_matrix<- dist(x, method = "euclidean", diag=FALSE)
+res<-NbClust(x, diss=diss_matrix, distance = NULL, min.nc=2, max.nc=6, 
+            method = "ward.D2", index = "alllong")
+res$All.index
+res$Best.nc
+res$All.CriticalValues
+res$Best.partition
+            
 }
 \references{
  1. Baker FB, Hubert LJ (1975). "Measuring the Power of Hierarchical Cluster Analysis." Journal of the American Statistical Association, 70(349), 31-38. URL http://www.jstor.org/stable/2285371.\cr 
