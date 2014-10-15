@@ -249,44 +249,46 @@ res$Best.partition
             
 }
 \references{
- 1. Baker FB, Hubert LJ (1975). "Measuring the Power of Hierarchical Cluster Analysis." Journal of the American Statistical Association, 70(349), 31-38. URL http://www.jstor.org/stable/2285371.\cr 
- 2. Beale EML (1969). Cluster analysis. Scientific Control Systems, London.\cr    
- 3. Bezdek J, Pal N (1998). "Some new indexes of cluster validity". IEEE transactions on systems, man and cybernetics, 28(3).\cr
- 4. Calinski T, Harabasz J (1974). "A dendrite method for cluster analysis." Communications in Statistics - Theory and Methods, 3(1), 1-27. doi:10.1080/03610927408827101. URL \cr
+ 1.  Charrad M., Ghazzali N., Boiteau V., Niknafs A. (2014). "NbClust: An R Package for Determining the Relevant Number of Clusters in a Data Set.",
+        "Journal of Statistical Software, 61(6), 1-36.", "URL http://www.jstatsoft.org/v61/i06/".\cr
+ 2.  Baker FB, Hubert LJ (1975). "Measuring the Power of Hierarchical Cluster Analysis." Journal of the American Statistical Association, 70(349), 31-38. URL http://www.jstor.org/stable/2285371.\cr 
+ 3.  Beale EML (1969). Cluster analysis. Scientific Control Systems, London.\cr    
+ 4.  Bezdek J, Pal N (1998). "Some new indexes of cluster validity". IEEE transactions on systems, man and cybernetics, 28(3).\cr
+ 5.  Calinski T, Harabasz J (1974). "A dendrite method for cluster analysis." Communications in Statistics - Theory and Methods, 3(1), 1-27. doi:10.1080/03610927408827101. URL \cr
 http://dx.doi.org/10.1080/03610927408827101. \cr
- 5. Davies DL, Bouldin DW (1979). "A cluster separation measure". IEEE Transactions on Pattern Analysis and Machine Intelligence, 1(2), 224-227.\cr
- 6. Dimitriadou E, Dolnicar S, Weingessel A (2002). "An examination of indexes for determining the number of clusters in binary data sets". Psychometrika, 67(3), 137-160.\cr
- 7. Duda RO, Hart PE (1973). "Pattern classification and scene analysis". John Wiley and Sons, Inc., New York, USA. ISBN 0-471-22361-1.  \cr
- 8. Dunn J (1974). "Well separated clusters and optimal fuzzy partitions". Journal Cybern, pp. 95-104.  \cr
- 9. Edwards AWF, Cavalli-Sforza L (1965). "A method for cluster analysis". Biometrics, 21(2), 362-375.   \cr
- 10. Frey T, Van Groenewoud H (1972). "A cluster analysis of the D-squared matrix of white spruce stands in Saskatchewan based on the maximum-minimum principle". Journal of Ecology, 60(3), 873-886.  \cr    
- 11. Friedman HP, Rubin J (1967). "On some invariant criteria for grouping data". Journal of the American Statistical Association, 62(320), 1159-1178. \cr
- 12. Fukunaga K, Koontz WLG (1970). "A criterion and an algorithm for grouping data". IEEE Transactions on Computers, C-19(10), 917-923. \cr
- 13. Gordon A (1999). "Classification". 2nd edition. Chapman & Hall/CRC, London. ISBN 1-58488-013-9.   \cr
- 14. Halkidi M, Batistakis I, Vazirgiannis M (2001). "On clustering validation techniques". Journal of Intelligent Information Systems, 17(2/3), 107-145.   \cr    
- 15. Halkidi M, Vazirgiannis M (2001). "Clustering validity assessment: finding the optimal partitioning of a data set". Proceeding ICDM '01 Proceedings of the 2001 IEEE International Conference on Data Mining, pp. 187-194. \cr
- 16. Halkidi M, Vazirgiannis M, Batistakis I (2000). "Quality Scheme Assessment in the Clustering Process". PKDD2000, pp. 265-276. \cr
- 17. Hartigan JA (1975). Clustering Algorithms. John Wiley & Sons, Inc., New York, NY, USA. ISBN 047135645X. \cr
- 18. Hill RS (1980). "A stopping rule for partitioning dendrograms". Botanical Gazette, 141(3), 321-324. \cr
- 19. Hubert LJ, Arabie P (1985). "Comparing partitions". Journal of Classification, 2, 193-218. \cr
- 20. Hubert LJ, Levin JR (1976). "A General Statistical Framework for Assessing Categorical Clustering in Free Recall". Psychological Bulletin, 83(6), 1072-1080. \cr 
+ 6.  Davies DL, Bouldin DW (1979). "A cluster separation measure". IEEE Transactions on Pattern Analysis and Machine Intelligence, 1(2), 224-227.\cr
+ 7.  Dimitriadou E, Dolnicar S, Weingessel A (2002). "An examination of indexes for determining the number of clusters in binary data sets". Psychometrika, 67(3), 137-160.\cr
+ 8.  Duda RO, Hart PE (1973). "Pattern classification and scene analysis". John Wiley and Sons, Inc., New York, USA. ISBN 0-471-22361-1.  \cr
+ 9.  Dunn J (1974). "Well separated clusters and optimal fuzzy partitions". Journal Cybern, pp. 95-104.  \cr
+ 10. Edwards AWF, Cavalli-Sforza L (1965). "A method for cluster analysis". Biometrics, 21(2), 362-375.   \cr
+ 11. Frey T, Van Groenewoud H (1972). "A cluster analysis of the D-squared matrix of white spruce stands in Saskatchewan based on the maximum-minimum principle". Journal of Ecology, 60(3), 873-886.  \cr    
+ 12. Friedman HP, Rubin J (1967). "On some invariant criteria for grouping data". Journal of the American Statistical Association, 62(320), 1159-1178. \cr
+ 13. Fukunaga K, Koontz WLG (1970). "A criterion and an algorithm for grouping data". IEEE Transactions on Computers, C-19(10), 917-923. \cr
+ 14. Gordon A (1999). "Classification". 2nd edition. Chapman & Hall/CRC, London. ISBN 1-58488-013-9.   \cr
+ 15. Halkidi M, Batistakis I, Vazirgiannis M (2001). "On clustering validation techniques". Journal of Intelligent Information Systems, 17(2/3), 107-145.   \cr    
+ 16. Halkidi M, Vazirgiannis M (2001). "Clustering validity assessment: finding the optimal partitioning of a data set". Proceeding ICDM '01 Proceedings of the 2001 IEEE International Conference on Data Mining, pp. 187-194. \cr
+ 17. Halkidi M, Vazirgiannis M, Batistakis I (2000). "Quality Scheme Assessment in the Clustering Process". PKDD2000, pp. 265-276. \cr
+ 18. Hartigan JA (1975). Clustering Algorithms. John Wiley & Sons, Inc., New York, NY, USA. ISBN 047135645X. \cr
+ 19. Hill RS (1980). "A stopping rule for partitioning dendrograms". Botanical Gazette, 141(3), 321-324. \cr
+ 20. Hubert LJ, Arabie P (1985). "Comparing partitions". Journal of Classification, 2, 193-218. \cr
+ 21. Hubert LJ, Levin JR (1976). "A General Statistical Framework for Assessing Categorical Clustering in Free Recall". Psychological Bulletin, 83(6), 1072-1080. \cr 
     URL http://www.eric.ed.gov/ERICWebPortal/contentdelivery/servlet/ERICServlet?accno=ED116162. \cr
- 21. Kaufman L, Rousseeuw P (1990). Finding groups in data: an introduction to cluster analysis. Wiley, New York, NY, USA. \cr
- 22. Kraemer HC (1982). "Biserial Correlation", Encyclopaedia of Statistical Sciences, Volume 1. Wiley, pages 276-279. \cr
- 23. KrzanowskiWJ, Lai YT (1988)."A Criterion for Determining the Number of Groups in a Data Set Using Sum-of-Squares Clustering". Biometrics, 44(1), 23-34. doi:10.2307/2531893. \cr
- 24. Lebart L, Morineau A, Piron M (2000). Statistique exploratoire multidimensionnelle. Dunod, Paris, France. ISBN 2100053515. \cr
- 25. Marriot FHC (1971). "Practical problems in a method of cluster analysis." Biometrics, 27(3), 501-514. \cr
- 26. Milligan G, Cooper M (1985). "An examination of procedures for determining the number of clusters in a data set." Psychometrika, 50(2), 159-179. \cr
- 27. Nieweglowski L (2009). clv: Cluster Validation Techniques. R package version 0.3-2, URL http://cran.r-project.org/web/packages/clv.  \cr
- 28. Orloci L (1967). "An agglomerative method for classification of plant communities". Journal of Ecology, 55(1), 193-206.     \cr
- 29. Ratkowsky DA, Lance GN (1978). "A criterion for determining the number of groups in a classification". Australian Computer Journal, 10, 115-117. \cr
- 30. Rholf F (1974). "Methods of comparing classifications". Annual Review of Ecology and Systematics, 5, 101-113.     \cr  
- 31. Rousseeuw P (1987). "Silhouettes: a graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics, 20, 53-65. \cr
- 32. Sarle WS (1983). "SAS Technical Report A-108, Cubic clustering criterion". Cary, N.C.: SAS Institute Inc. \cr   
- 33. Scott AJ, Symons MJ (1971). "Clustering methods based on likelihood ratio criteria". Biometrics, 27(2), 387-397.  \cr
- 34. Theodoridis S, Koutroubas K (1999). "Pattern recognition". Academic Press. \cr
- 35. Tibshirani R, Walther G, Hastie T (2001). "Estimating the number of clusters in a data set via the gap statistic". Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63(2), 411-423. doi:10.1111/1467-9868.00293. URL http://dx.doi.org/10.1111/1467-9868.00293.\cr
- 36. Murtagh, F. and Legendre, P. (2013) Ward's Hierarchical Agglomerative Clustering Method: Which Algorithms Implement Ward's Criterion? Journal of Classification. 
+ 22. Kaufman L, Rousseeuw P (1990). Finding groups in data: an introduction to cluster analysis. Wiley, New York, NY, USA. \cr
+ 23. Kraemer HC (1982). "Biserial Correlation", Encyclopaedia of Statistical Sciences, Volume 1. Wiley, pages 276-279. \cr
+ 24. KrzanowskiWJ, Lai YT (1988)."A Criterion for Determining the Number of Groups in a Data Set Using Sum-of-Squares Clustering". Biometrics, 44(1), 23-34. doi:10.2307/2531893. \cr
+ 25. Lebart L, Morineau A, Piron M (2000). Statistique exploratoire multidimensionnelle. Dunod, Paris, France. ISBN 2100053515. \cr
+ 26. Marriot FHC (1971). "Practical problems in a method of cluster analysis." Biometrics, 27(3), 501-514. \cr
+ 27. Milligan G, Cooper M (1985). "An examination of procedures for determining the number of clusters in a data set." Psychometrika, 50(2), 159-179. \cr
+ 28. Nieweglowski L (2009). clv: Cluster Validation Techniques. R package version 0.3-2, URL http://cran.r-project.org/web/packages/clv.  \cr
+ 29. Orloci L (1967). "An agglomerative method for classification of plant communities". Journal of Ecology, 55(1), 193-206.     \cr
+ 30. Ratkowsky DA, Lance GN (1978). "A criterion for determining the number of groups in a classification". Australian Computer Journal, 10, 115-117. \cr
+ 31. Rholf F (1974). "Methods of comparing classifications". Annual Review of Ecology and Systematics, 5, 101-113.     \cr  
+ 32. Rousseeuw P (1987). "Silhouettes: a graphical aid to the interpretation and validation of cluster analysis". Journal of Computational and Applied Mathematics, 20, 53-65. \cr
+ 33. Sarle WS (1983). "SAS Technical Report A-108, Cubic clustering criterion". Cary, N.C.: SAS Institute Inc. \cr   
+ 34. Scott AJ, Symons MJ (1971). "Clustering methods based on likelihood ratio criteria". Biometrics, 27(2), 387-397.  \cr
+ 35. Theodoridis S, Koutroubas K (1999). "Pattern recognition". Academic Press. \cr
+ 36. Tibshirani R, Walther G, Hastie T (2001). "Estimating the number of clusters in a data set via the gap statistic". Journal of the Royal Statistical Society: Series B (Statistical Methodology), 63(2), 411-423. doi:10.1111/1467-9868.00293. URL http://dx.doi.org/10.1111/1467-9868.00293.\cr
+ 37. Murtagh, F. and Legendre, P. (2013) Ward's Hierarchical Agglomerative Clustering Method: Which Algorithms Implement Ward's Criterion? Journal of Classification. 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

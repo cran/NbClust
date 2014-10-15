@@ -1,0 +1,22 @@
+citHeader("To cite NbClust in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{NbClust}: An {R} Package for Determining the Relevant Number of Clusters in a Data Set",
+  author       = personList(as.person("Malika Charrad"),
+                   as.person("Nadia Ghazzali"),
+                   as.person("V{\\'e}ronique Boiteau"),
+                   as.person("Azam Niknafs")),
+  journal      = "Journal of Statistical Software",
+  year         = "2014",
+  volume       = "61",
+  number       = "6",
+  pages        = "1--36",
+  url          = "http://www.jstatsoft.org/v61/i06/",
+
+  textVersion  =
+  paste("Malika Charrad, Nadia Ghazzali, Veronique Boiteau, Azam Niknafs (2014).",
+        "NbClust: An R Package for Determining the Relevant Number of Clusters in a Data Set.",
+        "Journal of Statistical Software, 61(6), 1-36.",
+        "URL http://www.jstatsoft.org/v61/i06/.")
+)
+
