@@ -8,26 +8,12 @@ NbClust <-function(data, diss=NULL, distance ="euclidean", min.nc=2, max.nc=15, 
     numberObsBefore <- dim(jeu1)[1]
     jeu <- na.omit(jeu1) # returns the object with incomplete cases removed 
     nn <- numberObsAfter <- dim(jeu)[1]
-    pp <- dim(jeu)[2]
+    pp <- dim(jeu)[2]    
     TT <- t(jeu)%*%jeu   
     sizeEigenTT <- length(eigen(TT)$value)
     eigenValues <- eigen(TT/(nn-1))$value
-    for (i in 1:sizeEigenTT) 
-    {
-    	    if (eigenValues[i] < 0) {
-		cat(paste("There are only", numberObsAfter,"nonmissing observations out of a possible", numberObsBefore ,"observations."))
-		stop("The TSS matrix is indefinite. There must be too many missing values. The index cannot be calculated.")
-    	    } 
-    }
-    s1 <- sqrt(eigenValues)
-    ss <- rep(1,sizeEigenTT)
-    for (i in 1:sizeEigenTT) 
-    {
-    		if (s1[i]!=0) 
-          ss[i]=s1[i]
-    }
-    vv <- prod(ss)  
     
+     
   #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
   #                                                                                                                      #
   #                                              Distances                                                               #
@@ -93,7 +79,8 @@ stop("dissimilarity matrix and distance are both not null")
     #                                              Methods                                                                 #
     #                                                                                                                      #
     #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#
-  if(is.null(method))    
+  
+if(is.null(method))    
     stop("method is NULL")
   method <- pmatch(method, c("ward.D2", "single", "complete", "average", 
 		"mcquitty", "median", "centroid", "kmeans","ward.D"))
@@ -609,40 +596,44 @@ Indice.ptbiserial <- function (x,md,cl1)
 
 Indices.WKWL <- function (x,cl1=cl1,cl2=cl2)
 {
-   pp <- dim(x)[2]
-
-   wss <- function(x) {
-	x <- as.matrix(x)
+   dim2 <- dim(x)[2]
+   wss <- function(x) 
+    {
+	      x <- as.matrix(x)
         n <- length(x)
         centers <- matrix(nrow = 1, ncol = ncol(x))
 
-        if (ncol(x) == 1) {
-                	centers[1, ] <- mean(x)
-            	}
-                if (is.null(dim(x))) {
-		bb <- matrix(x,byrow=FALSE,nrow=1,ncol=ncol(x))
+        if (ncol(x) == 1) 
+          {	centers[1, ] <- mean(x) 	}
+        if (is.null(dim(x))) 
+          {
+		      bb <- matrix(x,byrow=FALSE,nrow=1,ncol=ncol(x))
         	centers[1, ] <- apply(bb, 2, mean)
-    		}
-    		else {
+    		  }
+    		else 
+          {
                 centers[1, ] <- apply(x, 2, mean)
-		}
+		      }
 
         x.2 <- sweep(x,2,centers[1,],"-")
         withins <- sum(x.2^2)
         wss <- sum(withins)
-    return(wss)
+        return(wss)
     }
 
      ncg1 <- 1
      ncg1max <- max(cl1)
-     while((sum(cl1==ncg1)==sum(cl2==ncg1)) && ncg1 <=ncg1max) { ncg1 <- ncg1+1 }
+     while((sum(cl1==ncg1)==sum(cl2==ncg1)) && ncg1 <=ncg1max) 
+     { ncg1 <- ncg1+1 }
      g1 <- ncg1
 
      ncg2 <- max(cl2)
      nc2g2 <- ncg2-1
-     while((sum(cl1==nc2g2)==sum(cl2==ncg2)) && nc2g2 >=1) { 
+     while((sum(cl1==nc2g2)==sum(cl2==ncg2)) && nc2g2 >=1) 
+     { 
 	     ncg2 <- ncg2-1 
-	     nc2g2 <- nc2g2-1}
+	     nc2g2 <- nc2g2-1
+     }
      g2 <- ncg2
 
      NK <- sum(cl2==g1)
@@ -662,7 +653,7 @@ Indices.WKWL <- function (x,cl1=cl1,cl2=cl2)
      BKL <- WM-WK-WL
      pseudot2 <- BKL/((WK+WL)/(NK+NL-2))
 
-     beale <- (BKL/(WK+WL))/(((NM-1)/(NM-2))*(2^(2/pp)-1))
+     beale <- (BKL/(WK+WL))/(((NM-1)/(NM-2))*(2^(2/dim2)-1))
 
     results <- list(duda=duda,pseudot2=pseudot2,NM=NM,NK=NK,NL=NL,beale=beale)
     return(results)
@@ -1301,9 +1292,6 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     Index.dunn <- function(md, clusters, Data=NULL, method="euclidean")
     {
       
-      #if (is.null(distance) & is.null(Data)) stop("One of 'distance' or 'Data' is required")
-      #if (is.null(distance)) distance <- as.matrix(dist(Data, method=method))
-      #if (class(distance)=="dist") distance <- as.matrix(distance)
       distance <- as.matrix(md)
       nc <- max(clusters)
       interClust <- matrix(NA, nc, nc)
@@ -1326,11 +1314,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     
 
 
-
-     
-########################################################################################################################################
-################                       Début de la boucle pour calculer les indices                                     ###############
-#################################################################################################################################
+################
 
 
  indice <- pmatch(index, c("kl","ch","hartigan","ccc","scott","marriot","trcovw","tracew","friedman",
@@ -1347,6 +1331,27 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
       if((max.nc-min.nc)<2)
         stop("The difference between the minimum and the maximum number of clusters must be at least equal to 2")
     }
+
+# Only for indices using vv : CCC, Scott, marriot, tracecovw, tracew, friedman, rubin
+
+if (any(indice == 4) || (indice == 5) || (indice == 6) || (indice == 7) || (indice == 8) || (indice == 9) || (indice == 10) || (indice == 31) || (indice == 32))
+{
+  for (i in 1:sizeEigenTT) 
+  {
+    if (eigenValues[i] < 0) {
+      cat(paste("There are only", numberObsAfter,"nonmissing observations out of a possible", numberObsBefore ,"observations."))
+      stop("The TSS matrix is indefinite. There must be too many missing values. The index cannot be calculated.")
+    } 
+  }
+  s1 <- sqrt(eigenValues)
+  ss <- rep(1,sizeEigenTT)
+  for (i in 1:sizeEigenTT) 
+  {
+    if (s1[i]!=0) 
+      ss[i]=s1[i]
+  }
+  vv <- prod(ss)  
+} 
     
     
  for (nc in min_nc:max_nc)
@@ -1404,7 +1409,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	 }
 
 	j <- table(cl1)  # table uses the cross-classifying factors to build a contingency table of the counts at each combination of factor levels.
-	s <- sum(j==1)    # Nombre de classes composées d'un singleton dans cl1
+	s <- sum(j==1)    
 	j2 <- table(cl2)
 	s2 <- sum(j2==1)
  
@@ -1753,7 +1758,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 
   nc.Duda<-indice.Duda<-0
   # DUDA - Choose the number of clusters via finding the smallest q such that: duda >= critical_value [Duda and Hart (1973)].
-  # Si pour un max_nc toutes les valeurs de l'indice sont inférieures aux valeurs critiques, nc.Duda = NA et indice.Duda = NA
+ 
   
    if (any(indice == 14) || (indice == 31) || (indice == 32))
 	{
@@ -1785,7 +1790,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
    }  
     
   nc.Pseudo<-indice.Pseudo<-0  
-  # PSEUDOT2 - Choose the number of clusters via finding the smallest q such that: pseudot2 <= critical_value [SAS User's guide].
+  # PSEUDOT2 - Chooses the number of clusters via finding the smallest q such that: pseudot2 <= critical_value [SAS User's guide].
 	if (any(indice == 15) || (indice == 31) || (indice == 32))
 	{
      
@@ -1817,7 +1822,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   nc.Beale<-indice.Beale<-0
   	if (any(indice == 16) || (indice == 31) || (indice == 32))
 	{
-  # BEALE - Choose the number of clusters via finding the smallest q such that: Fvalue_beale >= 0.1 [Gordon (1999)].
+  # BEALE - Chooses the number of clusters via finding the smallest q such that: Fvalue_beale >= 0.1 [Gordon (1999)].
      foundBeale <- FALSE
      for (ncB in min_nc:max_nc)
        {
@@ -1949,7 +1954,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
 	       DiffLev[nc3-min_nc+1,4] <- abs(res[nc3-min_nc+1,6]-NA)   # Marriot
 	       DiffLev[nc3-min_nc+1,5] <- abs(res[nc3-min_nc+1,7]-NA)   #Trcovw
 	       DiffLev[nc3-min_nc+1,6] <- abs(res[nc3-min_nc+1,8]-NA)   #Tracew
-	       DiffLev[nc3-min_nc+1,7] <- abs(res[nc3-min_nc+1,9]-NA)  #Friedman
+	       DiffLev[nc3-min_nc+1,7] <- abs(res[nc3-min_nc+1,9]-NA)   #Friedman
 	       DiffLev[nc3-min_nc+1,8] <- abs(res[nc3-min_nc+1,10]-NA)  #Rubin
 	       DiffLev[nc3-min_nc+1,9] <- abs(res[nc3-min_nc+1,18]-NA)  # Ball
          DiffLev[nc3-min_nc+1,10] <- abs(res[nc3-min_nc+1,27]-NA) # Hubert   
