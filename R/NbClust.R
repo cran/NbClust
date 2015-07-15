@@ -1,4 +1,4 @@
-NbClust <-function(data = NULL, diss=NULL, distance ="euclidean", min.nc=2, max.nc=15, method =NULL, index = "all", alphaBeale = 0.1)
+NbClust <-function(data = NULL, diss=NULL, distance ="euclidean", min.nc=2, max.nc=15, method =NULL, index = "all", alphaBeale = 0.1, plots = TRUE)
 {
     
     x<-0
@@ -2134,7 +2134,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   
   
    nc.Hubert<-indice.Hubert<-0
-   if (any(indice == 27) || (indice == 31) || (indice == 32)) 
+   if (any((indice == 27) || (indice == 31) || (indice == 32)) && plots) 
 	 {       
 	   # Hubert - 
      nc.Hubert  <- 0.00
@@ -2160,7 +2160,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
   
     
     nc.Dindex<-indice.Dindex<-0
-    if (any(indice == 29) || (indice == 31) || (indice == 32)) 
+    if (any((indice == 29) || (indice == 31) || (indice == 32)) && plots) 
 	  {
 
      nc.Dindex <- 0.00
