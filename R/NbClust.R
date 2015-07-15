@@ -46,7 +46,7 @@ NbClust <-function(data = NULL, diss=NULL, distance ="euclidean", min.nc=2, max.
         if(is.null(diss))
           stop("data matrix and dissimilarity matrix are both null")
         else  
-          cat("\n","Only frey, mcclain, cindex, sihouette and dunn can be computed. To compute the other indices, data matrix is needed","\n") 
+          message("\n","Only frey, mcclain, cindex, sihouette and dunn can be computed. To compute the other indices, data matrix is needed","\n") 
       }
     }
     
@@ -762,7 +762,7 @@ Indices.WBT <- function(x,cl,P,s,vv)
   tracew <- sum(diag(W))
   if(det(W)!=0)
      scott <- n*log(det(P)/det(W))
-  else {cat("Error: division by zero!")}
+  else {message("Error: division by zero!")}
   friedman <- sum(diag(solve(W)*B))
   rubin <- sum(diag(P))/sum(diag(W))
   
@@ -2143,7 +2143,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
      par(mfrow = c(1,2))
      plot(x_axis,res[,27], tck=0, type="b", col="red", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Hubert Statistic values")))
      plot(DiffLev[,1],DiffLev[,10], tck=0, type="b", col="blue", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Hubert statistic second differences")))
-     cat(paste ("*** : The Hubert index is a graphical method of determining the number of clusters.
+     message(paste ("*** : The Hubert index is a graphical method of determining the number of clusters.
                 In the plot of Hubert index, we seek a significant knee that corresponds to a 
                 significant increase of the value of the measure i.e the significant peak in Hubert
                 index second differences plot.", "\n", "\n"))
@@ -2169,7 +2169,7 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
      par(mfrow = c(1,2))
      plot(x_axis,res[,29], tck=0, type="b", col="red", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Dindex Values")))
      plot(DiffLev[,1],DiffLev[,12], tck=0, type="b", col="blue", xlab= expression(paste("Number of clusters ")), ylab= expression(paste("Second differences Dindex Values")))
-     cat(paste ("*** : The D index is a graphical method of determining the number of clusters. 
+     message(paste ("*** : The D index is a graphical method of determining the number of clusters. 
                 In the plot of D index, we seek a significant knee (the significant peak in Dindex
                 second differences plot) that corresponds to a significant increase of the value of
                 the measure.", "\n", "\n"))
@@ -2287,15 +2287,15 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
     
     if(any(indice == 31) || (indice == 32))
     {
-      cat("*******************************************************************", "\n")
-      cat("* Among all indices:                                               ", "\n")
+      message("*******************************************************************", "\n")
+      message("* Among all indices:                                               ", "\n")
       BestCluster<-results1[1,]
       c=0
       for(i in min.nc:max.nc)
       {
         vect<-which(BestCluster==i)
         if(length(vect)>0)
-        cat("*",length(vect), "proposed", i,"as the best number of clusters", "\n")
+        message("*",length(vect), "proposed", i,"as the best number of clusters", "\n")
       
         if(c<length(vect))
         { 
@@ -2304,9 +2304,9 @@ Indice.Gap <- function (x, clall, reference.distribution = "unif", B = 10,
         }
       }
     
-        cat("\n","                  ***** Conclusion *****                           ", "\n", "\n")
-        cat("* According to the majority rule, the best number of clusters is ",j , "\n", "\n", "\n")
-        cat("*******************************************************************", "\n")
+        message("\n","                  ***** Conclusion *****                           ", "\n", "\n")
+        message("* According to the majority rule, the best number of clusters is ",j , "\n", "\n", "\n")
+        message("*******************************************************************", "\n")
       
         
       ########################## The Best partition    ###################
