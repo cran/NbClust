@@ -11,7 +11,7 @@ citEntry(entry = "Article",
   volume       = "61",
   number       = "6",
   pages        = "1--36",
-  url          = "http://www.jstatsoft.org/v61/i06/",
+  url          = "https://www.jstatsoft.org/v61/i06/",
 
   textVersion  =
   paste("Malika Charrad, Nadia Ghazzali, Veronique Boiteau, Azam Niknafs (2014).",

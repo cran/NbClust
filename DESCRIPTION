@@ -1,7 +1,7 @@
 Package: NbClust
 Type: Package
 Title: Determining the Best Number of Clusters in a Data Set
-Version: 3.0
+Version: 3.0.1
 Depends: R (>= 3.1.0)
 Date: 2015-04-13
 Author: Malika Charrad and Nadia Ghazzali and Veronique Boiteau and Azam Niknafs  
@@ -10,7 +10,7 @@ Description: It provides 30 indexes for determining the optimal number of cluste
 URL:
         https://sites.google.com/site/malikacharrad/research/nbclust-package
 License: GPL-2
-Packaged: 2015-04-13 13:57:52 UTC; toshiba
+Packaged: 2022-05-02 10:08:05 UTC; hornik
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2015-04-13 22:54:43
+Date/Publication: 2022-05-02 13:01:42 UTC
